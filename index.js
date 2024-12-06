@@ -32,7 +32,7 @@ mongoose
   });
 
 // Use testRoutes for all /test routes
-app.use("/api/test", testRoutes); // Any route starting with /test will be handled by testRoutes
+app.use("/", testRoutes); // Any route starting with /test will be handled by testRoutes
 
 // Set the port for the server from environment variable (default to 3000 if not set)
 const port = process.env.PORT || 3000;
