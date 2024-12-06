@@ -1,27 +1,41 @@
-// Importing the required modules
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import testRoutes from "./routes/testRoutes.js"; // Importing testRoutes
 
-// Creating an instance of an Express application
+// Load environment variables from .env file
+dotenv.config();
+
+// Create an Express app
 const app = express();
 
+// Middleware to parse JSON bodies
+app.use(express.json()); // Necessary to handle JSON request bodies
+
+// Enable CORS for all origins
 app.use(
   cors({
-    origin: "*", // Only allow requests from example.com
+    origin: "*",
   })
 );
 
-// Set the port for the server
-const port = 3000;
+// Connect to MongoDB (using MONGODB_URI from .env)
+const mongoURI = process.env.MONGODB_URI;
+mongoose
+  .connect(mongoURI)
+  .then(() => {
+    console.log("MongoDB connected successfully");
+  })
+  .catch((err) => {
+    console.error("Error connecting to MongoDB:", err);
+  });
 
-// Home route
-app.get("/", (req, res) => {
-  res.send("Hello, World!");
-});
+// Use testRoutes for all /test routes
+app.use("/api/test", testRoutes); // Any route starting with /test will be handled by testRoutes
 
-app.get("/api", (req, res) => {
-  res.json({ message: "Welcome to the API" });
-});
+// Set the port for the server from environment variable (default to 3000 if not set)
+const port = process.env.PORT || 3000;
 
 // Start the server
 app.listen(port, () => {
